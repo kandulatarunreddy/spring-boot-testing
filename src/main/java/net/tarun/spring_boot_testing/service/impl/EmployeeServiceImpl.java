@@ -47,4 +47,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         // TODO Auto-generated method stub
         return employeeRepository.save(updatedEmployee);
     }
+
+    @Override
+    public void deleteEmployee(long id) {
+        // TODO Auto-generated method stub
+        employeeRepository.deleteById(id);
+    }
 }
