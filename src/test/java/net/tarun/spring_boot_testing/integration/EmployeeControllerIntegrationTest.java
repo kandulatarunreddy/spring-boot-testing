@@ -69,6 +69,24 @@ public class EmployeeControllerIntegrationTest {
                         is(employee.getEmail())));
 
     }
+    // JUnit test for Get All employees REST API
+    @Test
+    public void givenListOfEmployees_whenGetAllEmployees_thenReturnEmployeesList() throws Exception{
+        // given - precondition or setup
+        List<Employee> listOfEmployees = new ArrayList<>();
+        listOfEmployees.add(Employee.builder().firstName("tarun").lastName("reddy").email("tarun@gmail.com").build());
+        listOfEmployees.add(Employee.builder().firstName("arun").lastName("reddy").email("arun@gmail.com").build());
+        employeeRepository.saveAll(listOfEmployees);
+        // when -  action or the behaviour that we are going test
+        ResultActions response = mockMvc.perform(get("/api/employees"));
+
+        // then - verify the output
+        response.andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.size()",
+                        is(listOfEmployees.size())));
+
+    }
 
 
 }
