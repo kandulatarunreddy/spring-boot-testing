@@ -18,7 +18,6 @@ import static org.mockito.Mockito.verify;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
@@ -114,12 +113,7 @@ public class EmployeeServiceTests {
     public void givenEmptyEmployeesList_whenGetAllEmployees_thenReturnEmptyEmployeesList(){
         // given - precondition or setup
 
-        Employee employee1 = Employee.builder()
-                .id(2L)
-                .firstName("arun")
-                .lastName("reddy")
-                .email("reddy@gmail.com")
-                .build();
+    
 
         given(employeeRepository.findAll()).willReturn(Collections.emptyList());
 
@@ -145,6 +139,22 @@ public class EmployeeServiceTests {
           Assertions.assertThat(savedEmployee).isNotNull();
   
       }
+
+      // JUnit test for updateEmployee method
+    @DisplayName("JUnit test for updateEmployee method")
+    @Test
+    public void givenEmployeeObject_whenUpdateEmployee_thenReturnUpdatedEmployee(){
+        // given - precondition or setup
+        given(employeeRepository.save(employee)).willReturn(employee);
+        employee.setEmail("ram@gmail.com");
+        employee.setFirstName("Ram");
+        // when -  action or the behaviour that we are going test
+        Employee updatedEmployee = employeeService.updateEmployee(employee);
+
+        // then - verify the output
+        Assertions.assertThat(updatedEmployee.getEmail()).isEqualTo("ram@gmail.com");
+        Assertions.assertThat(updatedEmployee.getFirstName()).isEqualTo("Ram");
+    }
 
 
 }

@@ -4,10 +4,7 @@ import net.tarun.spring_boot_testing.exception.ResourceNotFoundException;
 import net.tarun.spring_boot_testing.model.Employee;
 import net.tarun.spring_boot_testing.repository.EmployeeRepository;
 import net.tarun.spring_boot_testing.service.EmployeeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.swing.text.html.Option;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,5 +40,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Optional<Employee> getEmployeeById(long id) {
         // TODO Auto-generated method stub
         return employeeRepository.findById(id);
+    }
+
+    @Override
+    public Employee updateEmployee(Employee updatedEmployee) {
+        // TODO Auto-generated method stub
+        return employeeRepository.save(updatedEmployee);
     }
 }
