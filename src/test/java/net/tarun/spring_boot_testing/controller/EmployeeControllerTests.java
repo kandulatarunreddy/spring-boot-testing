@@ -1,5 +1,6 @@
 package net.tarun.spring_boot_testing.controller;
 
+import static net.bytebuddy.matcher.ElementMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -10,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
@@ -88,5 +90,28 @@ public class EmployeeControllerTests {
 
     }
     
+    // positive scenario - valid employee id
+    // JUnit test for GET employee by id REST API
+    @Test
+    public void givenEmployeeId_whenGetEmployeeById_thenReturnEmployeeObject() throws Exception {
+        // given - precondition or setup
+        long employeeId = 1L;
+        Employee employee = Employee.builder()
+                .firstName("tarun")
+                .lastName("reddy")
+                .email("tarun@gmail.com")
+                .build();
+        given(employeeService.getEmployeeById(employeeId)).willReturn(Optional.of(employee));
+
+        // when -  action or the behaviour that we are going test
+        ResultActions response = mockMvc.perform(get("/api/employees/{id}", employeeId));
+
+        // then - verify the output
+        response.andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.firstName",CoreMatchers.is(employee.getFirstName())))
+                .andExpect(jsonPath("$.lastName", CoreMatchers.is(employee.getLastName())))
+                .andExpect(jsonPath("$.email", CoreMatchers.is(employee.getEmail())));
+    }
 
 }
