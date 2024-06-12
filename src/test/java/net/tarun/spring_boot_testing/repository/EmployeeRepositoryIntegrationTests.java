@@ -24,6 +24,7 @@ public class EmployeeRepositoryIntegrationTests {
 
     @BeforeEach
     public void setup(){
+        employeeRepository.deleteAll();
         employee = Employee.builder()
                 .firstName("Ramesh")
                 .lastName("Fadatare")
@@ -72,7 +73,7 @@ public class EmployeeRepositoryIntegrationTests {
 
         // when -  action or the behaviour that we are going test
         List<Employee> employeeList = employeeRepository.findAll();
-
+        System.out.println(employeeList);
         // then - verify the output
         assertThat(employeeList).isNotNull();
         assertThat(employeeList.size()).isEqualTo(2);
