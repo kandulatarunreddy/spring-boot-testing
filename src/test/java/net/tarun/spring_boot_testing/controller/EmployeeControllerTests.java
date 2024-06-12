@@ -2,8 +2,14 @@ package net.tarun.spring_boot_testing.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
@@ -11,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -53,15 +58,35 @@ public class EmployeeControllerTests {
                 .content(objectMapper.writeValueAsString(employee)));
 
         // then - verify the result or output using assert statements
-        response.andDo(MockMvcResultHandlers.print()).
-                andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName",
+        response.andDo(print()).
+                andExpect(status().isCreated())
+                .andExpect(jsonPath("$.firstName",
                         CoreMatchers.is(employee.getFirstName())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName",
+                .andExpect(jsonPath("$.lastName",
                         CoreMatchers.is(employee.getLastName())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email",
+                .andExpect(jsonPath("$.email",
                         CoreMatchers.is(employee.getEmail())));
 
     }
+    // JUnit test for Get All employees REST API
+    @Test
+    public void givenListOfEmployees_whenGetAllEmployees_thenReturnEmployeesList() throws Exception{
+        // given - precondition or setup
+        List<Employee> listOfEmployees = new ArrayList<>();
+        listOfEmployees.add(Employee.builder().firstName("Tarun").lastName("Reddy").email("tarun@gmail.com").build());
+        listOfEmployees.add(Employee.builder().firstName("arun").lastName("Reddy").email("arun@gmail.com").build());
+        given(employeeService.getAllEmployees()).willReturn(listOfEmployees);
+
+        // when -  action or the behaviour that we are going test
+        ResultActions response = mockMvc.perform(get("/api/employees"));
+
+        // then - verify the output
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()",
+                        CoreMatchers.is(listOfEmployees.size())));
+
+    }
+    
 
 }
