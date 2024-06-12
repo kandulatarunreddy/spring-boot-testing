@@ -38,4 +38,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         // TODO Auto-generated method stub
         return employeeRepository.findAll();
     }
+
+    @Override
+    public Optional<Employee> getEmployeeById(long id) {
+        // TODO Auto-generated method stub
+        return employeeRepository.findById(id);
+    }
 }
