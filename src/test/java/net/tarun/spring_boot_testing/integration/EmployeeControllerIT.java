@@ -9,17 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -27,7 +28,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-public class EmployeeControllerIntegrationTest {
+@Testcontainers
+public class EmployeeControllerIT {
+
+    @Container
+    private static final MySQLContainer mySQLContainer= new MySQLContainer("mysql:latest");
+
+    @DynamicPropertySource
+    public static void dynamicPropertySource(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
+        registry.add("spring.datasource.username", mySQLContainer::getUsername);
+        registry.add("spring.datasource.password", mySQLContainer::getPassword);
+    }
+
 
     @Autowired
     private MockMvc mockMvc;

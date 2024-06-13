@@ -24,6 +24,7 @@ public class EmployeeRepositoryIntegrationTests {
 
     @BeforeEach
     public void setup(){
+
         employeeRepository.deleteAll();
         employee = Employee.builder()
                 .firstName("Ramesh")
